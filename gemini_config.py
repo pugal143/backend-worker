@@ -62,7 +62,7 @@ def dict_to_document(doc_dict):
     return Document(
         page_content=doc_dict["page_content"],
         metadata=doc_dict["metadata"],
-        lookup_str=doc_dict.get("lookup_str", ''),
+        lookup_str=doc_dict.get("lookup_str", ''),  # Use .get to avoid KeyError
         lookup_index=doc_dict.get("lookup_index", 0)
     )
 
@@ -82,7 +82,7 @@ def save_progress(_id, stage, data):
     file_path = os.path.join(CACHE_DIR, f'{_id}_{stage}.json')
     try:
         with open(file_path, 'w') as file:
-            json.dump([document_to_dict(doc) if isinstance(doc, Document) else doc for doc in data], file)
+            json.dump([document_to_dict(doc) for doc in data], file)
     except Exception as e:
         logger.error(f"Error saving progress file {file_path}: {e}")
 
@@ -241,4 +241,4 @@ def generate_answer(retrieved_chunks, query):
     ]
 
     response = model.generate_content(prompt_parts)
-    return response.text
+    return response
